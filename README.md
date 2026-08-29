@@ -1,5 +1,9 @@
 # Aura Cycles — sync your cycle, maximize your aura
 
+**Live app → https://www.auracycles.app**
+
+![Aura Cycles calendar — color-coded cycle map](docs/screenshot.png)
+
 Aura Cycles is a **women's health tracking app** that tracks her cycle and, based on
 **which week she is in**, recommends whether to take a **pilates class or strength
 training**, whether to go to the **speed-dating event during her follicular or ovulation

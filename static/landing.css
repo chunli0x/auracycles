@@ -22,6 +22,8 @@
 .hero-desc strong { color: var(--ink); }
 .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
 .hero-btns .cta { width: auto; padding: 14px 28px; }
+.hero-oss { margin: 18px 0 0; font-size: 13px; color: var(--muted-2); }
+.hero-oss a { color: var(--accent-3); }
 .cta-outline { display: inline-block; padding: 13px 28px; border: 1.5px solid var(--line); border-radius: 14px; color: var(--muted); font-size: 15px; font-weight: 600; text-decoration: none; transition: all 0.15s; }
 .cta-outline:hover { border-color: var(--accent); color: var(--ink); }
 

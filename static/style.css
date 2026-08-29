@@ -200,6 +200,7 @@ fieldset.peri-checklist legend em { color: var(--muted-2); font-weight: 400; fon
 .peri-note strong { color: var(--rose); }
 .peri-src { display: block; margin-top: 8px; font-size: 11px; color: var(--muted-2); font-style: italic; }
 .peri-src-line { font-size: 11px; color: var(--muted-2); font-style: italic; margin: -6px 0 14px; }
+.peri-src a, .peri-src-line a { color: var(--accent-3); }
 
 .cta {
   width: 100%; padding: 15px; font-size: 16px; font-weight: 700; color: #0B1724;

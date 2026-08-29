@@ -24,6 +24,8 @@
   display: inline-block; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
   color: var(--accent); margin-bottom: 8px; font-weight: 600;
 }
+.formula-step a { color: var(--accent-3); }
+.formula-desc a, .peri-src-line a, .peri-src a { color: var(--accent-3); }
 .formula-math {
   font-family: var(--serif); font-size: 21px; color: var(--ink);
   line-height: 1.5; letter-spacing: 0.2px; overflow-wrap: anywhere;

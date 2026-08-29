@@ -326,7 +326,7 @@ function render(data) {
     today.push(`<div class="peri-note">Perimenopause may be starting — ${escapeHtml(data.peri_signals.join("; "))}. <strong>Not a diagnosis.</strong> Your cycle timing is a best-guess here; trust how you actually feel day to day.</div>`);
   }
   const periCount = data.peri_symptom_count != null ? data.peri_symptom_count : 0;
-  today.push(`<div class="peri-src-line">Selected ${periCount} of 9 changes — based on the "very early perimenopause" criteria from CeMCOR, the Centre for Menstrual Cycle and Ovulation Research (UBC).</div>`);
+  today.push(`<div class="peri-src-line">Selected ${periCount} of 9 changes — based on the <a href="https://cemcor.ubc.ca/resources/how-can-i-tell-i-am-perimenopause/" target="_blank" rel="noopener">"very early perimenopause" criteria from CeMCOR</a>, the Centre for Menstrual Cycle and Ovulation Research (UBC).</div>`);
 
   const sign = $("sign").value;
   today.push(renderAstroToday(data, sign));
@@ -1203,7 +1203,7 @@ function updatePeriCount() {
   const total = document.querySelectorAll('input[name="peri_symptom"]').length;
   const sel = document.querySelectorAll('input[name="peri_symptom"]:checked').length;
   const el = document.getElementById("peri-count");
-  if (el) el.textContent = `Selected ${sel} of ${total} — based on CeMCOR's "very early perimenopause" criteria (Centre for Menstrual Cycle and Ovulation Research, UBC).`;
+  if (el) el.innerHTML = `Selected ${sel} of ${total} — based on <a href="https://cemcor.ubc.ca/resources/how-can-i-tell-i-am-perimenopause/" target="_blank" rel="noopener">CeMCOR's "very early perimenopause" criteria</a> (Centre for Menstrual Cycle and Ovulation Research, UBC).`;
 }
 document.querySelectorAll('input[name="peri_symptom"]').forEach((c) => c.addEventListener("change", updatePeriCount));
 updatePeriCount();
