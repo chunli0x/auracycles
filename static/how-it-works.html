@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>How it works — Aura Cycles</title>
+  <meta name="description" content="The deterministic formulas behind Aura Cycles. Every recommendation is computed from your data, run against scientific formulas. Nothing guessed, nothing hallucinated." />
+  <meta name="theme-color" content="#0B1724" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" type="image/png" href="/static/icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="/static/icons/icon-180.png" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Aura Cycles" />
+  <link rel="stylesheet" href="/static/fonts/fonts.css" />
+  <link rel="stylesheet" href="/static/landing.css" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="stylesheet" href="/static/pages.css" />
+</head>
+<body>
+
+  <nav class="topnav" aria-label="Primary">
+    <a class="nav-brand" href="/">aura</a>
+    <div class="nav-links nav-landing">
+      <a href="/#features">Features</a>
+      <a href="/how-it-works" class="active">How it works</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+      <a href="/app">Get started</a>
+    </div>
+  </nav>
+
+  <main class="page-wrap">
+    <div class="page-kicker">Under the hood</div>
+    <h1 class="page-title">How Aura Cycles <em>actually works.</em></h1>
+    <p class="page-lede">Aura is <strong>100% deterministic</strong>. Every number you see is computed from your data with a fixed formula. No machine learning, no guesses, no hallucination. Here is the exact math, step by step.</p>
+
+    <h2 class="page-h2">1. Where you are in your cycle</h2>
+    <div class="formula-stack">
+      <div class="formula">
+        <span class="formula-step">Cycle day</span>
+        <div class="formula-math">D(t) <span class="op">=</span> (t <span class="op">−</span> s<sub>last</sub>) <span class="op">+</span> 1</div>
+        <div class="formula-desc"><code>t</code> is today, <code>s<sub>last</sub></code> is your most recent period start. Day 1 is the first day of your period. The count is in whole days, so there is no timezone drift.</div>
+      </div>
+
+      <div class="formula">
+        <span class="formula-step">Your average cycle length</span>
+        <div class="formula-math">C <span class="op">=</span> round( mean( g<sub>1</sub>, g<sub>2</sub>, … ) )</div>
+        <div class="formula-desc">Each <code>g<sub>i</sub> = s<sub>i+1</sub> − s<sub>i</sub></code> is the gap in days between two consecutive period starts. We keep only gaps between 15 and 45 days (anything outside that is an outlier). The mean is rounded to the nearest whole day.</div>
+      </div>
+
+      <div class="formula">
+        <span class="formula-step">Ovulation (fixed luteal model)</span>
+        <div class="formula-math">O <span class="op">=</span> C <span class="op">−</span> 14</div>
+        <div class="formula-desc">The luteal phase (after ovulation, before the next period) is physiologically close to 14 days for almost everyone, no matter the total cycle length. So a 28-day cycle ovulates around day 14, and a 25-day cycle ovulates around day 11. This is what lets Aura adapt to your cycle rather than assuming 28 days.</div>
+      </div>
+    </div>
+
+    <h2 class="page-h2">2. Which stretch you are in</h2>
+    <div class="formula">
+      <span class="formula-step">The five stretches</span>
+      <div class="piecewise">
+        <div class="row"><span class="cond">1 ≤ D ≤ P</span><span class="name">→ Rest &amp; Renew</span> <span class="cond">(menstrual)</span></div>
+        <div class="row"><span class="cond">P &lt; D &lt; O − 1</span><span class="name">→ Follicular Rise</span> <span class="cond">(follicular)</span></div>
+        <div class="row"><span class="cond">O − 1 ≤ D ≤ O + 1</span><span class="name">→ Ovulation Glow</span> <span class="cond">(ovulatory)</span></div>
+        <div class="row"><span class="cond">O + 1 &lt; D &lt; C − 5</span><span class="name">→ Luteal Flow</span> <span class="cond">(early luteal)</span></div>
+        <div class="row"><span class="cond">C − 5 ≤ D ≤ C</span><span class="name">→ Reflect &amp; Rest</span> <span class="cond">(late luteal)</span></div>
+      </div>
+      <div class="formula-desc"><code>P</code> is how many days your period lasts (you tell us). <code>D</code> is your cycle day, <code>C</code> your cycle length, <code>O</code> your ovulation day from step 1.</div>
+    </div>
+
+    <h2 class="page-h2">3. When your next period is due</h2>
+    <div class="formula">
+      <span class="formula-step">Next period</span>
+      <div class="formula-math">s<sub>next</sub> <span class="op">=</span> s<sub>last</sub> <span class="op">+</span> C <span class="op">·</span> days</div>
+      <div class="formula-desc">Days until your next period are <code>s<sub>next</sub> − t</code>. If that is negative, you are that many days overdue.</div>
+    </div>
+
+    <h2 class="page-h2">4. How confident the prediction is</h2>
+    <div class="formula-stack">
+      <div class="formula">
+        <span class="formula-step">Cycle variability</span>
+        <div class="formula-math">V <span class="op">=</span> max(g) <span class="op">−</span> min(g)</div>
+        <div class="formula-desc">The spread between your longest and shortest observed cycle gap. Needs at least three period starts to be meaningful.</div>
+      </div>
+      <div class="formula">
+        <span class="formula-step">Confidence</span>
+        <div class="piecewise">
+          <div class="row"><span class="cond">V ≤ 2</span><span class="name">→ High</span></div>
+          <div class="row"><span class="cond">2 &lt; V ≤ 5</span><span class="name">→ Medium</span></div>
+          <div class="row"><span class="cond">V &gt; 5</span><span class="name">→ Low</span></div>
+        </div>
+        <div class="formula-desc">The more consistent your cycles, the more you can trust the projection. We show this openly rather than pretending every cycle is exact.</div>
+      </div>
+    </div>
+
+    <h2 class="page-h2">5. Perimenopause detection</h2>
+    <div class="formula-stack">
+      <div class="formula">
+        <span class="formula-step">Very early perimenopause (CeMCOR)</span>
+        <div class="formula-math">n<sub>symptoms</sub> <span class="op">≥</span> 3 <span class="op">of</span> 9</div>
+        <div class="formula-desc">If you report 3 or more of the 9 characteristic changes (heavier/longer flow, shorter cycles, sore/lumpy breasts, more cramps, mid-sleep waking, night sweats, worse migraines, more mood swings, unexplained weight gain), Aura flags <em>very early perimenopause</em>, even while your cycles are still regular.</div>
+      </div>
+      <div class="formula">
+        <span class="formula-step">Perimenopause (short or irregular cycles)</span>
+        <div class="formula-math">C <span class="op">≤</span> 25 <span class="op">or</span> V <span class="op">≥</span> 7</div>
+        <div class="formula-desc">A cycle length of 25 days or fewer is one of CeMCOR's early markers. Cycle-to-cycle variability of 7 or more days is the STRAW+10 definition of the menopause transition. Either one, without 3+ symptoms, flags <em>perimenopause</em>.</div>
+      </div>
+    </div>
+
+    <h2 class="page-h2">A note on the recommendations</h2>
+    <p class="page-lede" style="margin-bottom:0">The math above is sourced and verifiable. The day-to-day guidance (what to eat, how to train, when to book the big meeting) is <strong>general wellness guidance</strong> assembled from standard practice and timed to your stretch. It is not medical advice, and it is not tied to a single study. Perimenopause and menopause in particular deserve a clinician's input.</p>
+
+    <h2 class="page-h2">Sources</h2>
+    <ol class="source-list">
+      <li>
+        <span class="src-title">Prior JC. "How Can I Tell I Am in Perimenopause?"</span>
+        <span class="src-journal">Centre for Menstrual Cycle and Ovulation Research (CeMCOR), University of British Columbia.</span>
+        Source of the "very early perimenopause" criteria: any 3 of 9 characteristic changes while cycles may still be regular.
+        <br><a href="https://cemcor.ubc.ca/resources/how-can-i-tell-i-am-perimenopause/" target="_blank" rel="noopener">cemcor.ubc.ca/resources/how-can-i-tell-i-am-perimenopause</a>
+      </li>
+      <li>
+        <span class="src-title">Harlow SD, Gass M, Hall JE, et al. "Executive summary of the Stages of Reproductive Aging Workshop +10 (STRAW+10)."</span>
+        <span class="src-journal">Climacteric, 2012; 15(2): 105–114.</span>
+        Source of the "cycle length varying by 7+ days" definition of the menopause transition.
+      </li>
+      <li>
+        <span class="src-title">Lenton EA, Landgren BM, Sexton L. "Normal variation in the length of the luteal phase of the menstrual cycle."</span>
+        <span class="src-journal">British Journal of Obstetrics and Gynaecology, 1984; 91(7): 685–689.</span>
+        Basis for the fixed ~14-day luteal phase used to place ovulation (O = C − 14).
+      </li>
+      <li>
+        <span class="src-title">Wilcox AJ, Weinberg CR, Baird DD. "Timing of sexual intercourse in relation to ovulation."</span>
+        <span class="src-journal">New England Journal of Medicine, 1995; 333(23): 1517–1521.</span>
+        Basis for the fertile window (sperm survive ~5 days, the egg ~12–24 hours).
+      </li>
+    </ol>
+  </main>
+
+  <footer class="foot">
+    <div class="foot-brand">AURA CYCLES</div>
+    <div class="motto">Connect with inner guidance. <em>Leverage your cycle.</em></div>
+    <div class="disc">General wellness guidance, not medical advice. Perimenopause &amp; menopause deserve a clinician's input.</div>
+  </footer>
+
+</body>
+</html>

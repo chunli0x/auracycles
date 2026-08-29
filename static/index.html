@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Aura Cycles — Your cycle. Your power. Your timing.</title>
+  <meta name="description" content="Aura Cycles is your personal guide to hormonal health, energy, and emotional wellbeing. Track your cycle, understand your patterns, and get daily recommendations timed to your flow — all in your browser, private and deterministic." />
+  <meta name="theme-color" content="#0B1724" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" type="image/png" href="/static/icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="/static/icons/icon-180.png" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Aura Cycles" />
+  <link rel="stylesheet" href="/static/fonts/fonts.css" />
+  <link rel="stylesheet" href="/static/landing.css" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <script>
+    // Returning visitor? Go straight to the app — no login, nothing to re-enter.
+    (function () {
+      try {
+        var p = JSON.parse(localStorage.getItem('aura:profile') || 'null');
+        if (p && p.period_starts && p.period_starts.length) location.replace('/app');
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+
+  <!-- ===== Top navigation ===== -->
+  <nav class="topnav" aria-label="Primary">
+    <a class="nav-brand" href="#top">aura</a>
+    <div class="nav-links nav-landing">
+      <a href="#features">Features</a>
+      <a href="/how-it-works">How it works</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+      <a href="/app">Get started</a>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <header class="hero" id="top">
+    <div class="hero-illustration"></div>
+    <div class="hero-split">
+      <div class="hero-text">
+        <div class="hero-kicker">UNDERSTAND YOUR CYCLE. ALIGN WITH YOUR NATURE.</div>
+        <h1>Your cycle.<br><em>Your power.</em><br>Your timing.</h1>
+        <p class="hero-desc">Aura Cycles maps your cycle to your real life based on menstrual science. Start your GLP-1 on the right week. Book the pilates class when your body wants it. Schedule the girls' night when your charisma is at its highest. No more guessing — your cycle is the advantage you haven't been using. Whether you're in perimenopause, menopause, or still cycling regularly — we'll help you figure out what week is best for what you want to conquer.</p>
+        <div class="hero-btns">
+          <a href="/app" class="cta">Start your journey</a>
+          <a href="/how-it-works" class="cta-outline">See how it works</a>
+        </div>
+      </div>
+      <div class="hero-phone">
+        <div class="phone-frame">
+          <div class="phone-notch"></div>
+          <div class="phone-screen app-mock">
+            <div class="mock-banner">
+              <span class="mock-emoji">🌱</span>
+              <div class="mock-title">Follicular Rise</div>
+              <div class="mock-blurb">Rising energy. Your boldest window — create, learn, launch, push.</div>
+              <div class="mock-affirm">“I trust my timing. I follow my flow. I create my magic.”</div>
+            </div>
+            <div class="mock-facts">
+              <div class="mock-fact"><span>Cycle day</span><strong>6</strong></div>
+              <div class="mock-fact"><span>Cycle length</span><strong>28d</strong></div>
+              <div class="mock-fact"><span>Stage</span><strong>Regular</strong></div>
+            </div>
+            <div class="mock-rec"><div class="mock-rec-head">💪 Training</div><div class="mock-rec-body">Your strength window — push intensity now.</div></div>
+            <div class="mock-rec"><div class="mock-rec-head">🥗 Diet</div><div class="mock-rec-body">Lots of veg and lean protein.</div></div>
+            <div class="mock-tabbar"><span class="on">Today</span><span>Calendar</span><span>Insights</span><span>You</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== LANDING CONTENT ===== -->
+  <main class="landing">
+
+    <!-- Features -->
+    <section class="features" id="features">
+      <h2 class="section-title">All in one, <em>for every week of you.</em></h2>
+      <div class="feature-grid">
+        <div class="feat">
+          <div class="feat-icon">🌙</div>
+          <h3>CYCLE TRACKING</h3>
+          <p>Log your period, symptoms, energy, and mood. The deterministic engine maps your unique cycle.</p>
+        </div>
+        <div class="feat">
+          <div class="feat-icon">✦</div>
+          <h3>CYCLE INSIGHTS</h3>
+          <p>Know exactly which stretch you're in, and what your body needs in each one:</p>
+          <table class="stretch-table">
+            <thead><tr><th>Aura name</th><th>Cycle phase</th></tr></thead>
+            <tbody>
+              <tr><td>Rest &amp; Renew</td><td>Menstrual phase</td></tr>
+              <tr><td>Follicular Rise</td><td>Follicular phase</td></tr>
+              <tr><td>Ovulation Glow</td><td>Ovulation</td></tr>
+              <tr><td>Luteal Flow</td><td>Luteal phase</td></tr>
+              <tr><td>Reflect &amp; Rest</td><td>Late luteal (premenstrual)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="feat">
+          <div class="feat-icon">🌷</div>
+          <h3>PERSONALIZED GUIDANCE</h3>
+          <p>Daily recommendations for training, nutrition, social plans, and big meetings — timed to <em>your</em> cycle, not a generic calendar.</p>
+        </div>
+        <div class="feat">
+          <div class="feat-icon">☀️</div>
+          <h3>ENERGY & MOOD</h3>
+          <p>Track energy and mood every day. See which days you feel strong and which days you need to slow down, so you can plan around what your body actually does.</p>
+        </div>
+        <div class="feat">
+          <div class="feat-icon">📖</div>
+          <h3>JOURNAL & REFLECT</h3>
+          <p>A private space to log how you actually feel — not how you <em>should</em> feel. Your notes build a personal playbook over time.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Manifesto + Phone -->
+    <section class="showcase" id="about">
+      <div class="showcase-split">
+        <div class="showcase-left">
+          <blockquote>"When you know your cycle, you stop fighting your body — and start flowing with it."</blockquote>
+          <div class="showcase-phone">
+            <div class="phone-frame small">
+              <div class="phone-notch"></div>
+              <div class="phone-screen cal-screen">
+                <div class="mock-cal-hero">
+                  <div class="mock-cal-hero-icon">🌱</div>
+                  <div class="mock-cal-hero-title">Follicular Rise</div>
+                  <div class="mock-cal-hero-desc">estrogen climbs, energy returns</div>
+                </div>
+                <div class="mock-legend">
+                  <span class="mock-swatch" style="background:#A25A61"></span>Rest &amp; Renew
+                  <span class="mock-sep">·</span>
+                  <span class="mock-swatch" style="background:#2E7FA1"></span>Follicular Rise
+                  <span class="mock-sep">·</span>
+                  <span class="mock-swatch" style="background:#F2B996"></span>Ovulation Glow
+                  <span class="mock-sep">·</span>
+                  <span class="mock-swatch" style="background:#C56F4F"></span>Luteal Flow
+                  <span class="mock-sep">·</span>
+                  <span class="mock-swatch" style="background:#5B5366"></span>Reflect &amp; Rest
+                </div>
+                <div class="mock-month-label">August 2026</div>
+                <div class="mock-weekdays"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
+                <div class="mock-grid">
+                  <span class="mock-day blank"></span><span class="mock-day blank"></span><span class="mock-day blank"></span><span class="mock-day blank"></span><span class="mock-day blank"></span><span class="mock-day blank"></span>
+                  <span class="mock-day start" style="background:rgba(162,90,97,0.85)"><span class="md-num">1</span><span class="md-cd">1</span></span>
+                  <span class="mock-day" style="background:rgba(162,90,97,0.85)"><span class="md-num">2</span><span class="md-cd">2</span></span>
+                  <span class="mock-day" style="background:rgba(162,90,97,0.85)"><span class="md-num">3</span><span class="md-cd">3</span></span>
+                  <span class="mock-day" style="background:rgba(162,90,97,0.85)"><span class="md-num">4</span><span class="md-cd">4</span></span>
+                  <span class="mock-day" style="background:rgba(162,90,97,0.85)"><span class="md-num">5</span><span class="md-cd">5</span></span>
+                  <span class="mock-day today" style="background:rgba(46,127,161,0.85)"><span class="md-num">6</span><span class="md-cd">6</span></span>
+                  <span class="mock-day" style="background:rgba(46,127,161,0.85)"><span class="md-num">7</span><span class="md-cd">7</span></span>
+                  <span class="mock-day" style="background:rgba(46,127,161,0.85)"><span class="md-num">8</span><span class="md-cd">8</span></span>
+                  <span class="mock-day" style="background:rgba(46,127,161,0.85)"><span class="md-num">9</span><span class="md-cd">9</span></span>
+                  <span class="mock-day" style="background:rgba(46,127,161,0.85)"><span class="md-num">10</span><span class="md-cd">10</span></span>
+                  <span class="mock-day" style="background:rgba(46,127,161,0.85)"><span class="md-num">11</span><span class="md-cd">11</span></span>
+                  <span class="mock-day" style="background:rgba(46,127,161,0.85)"><span class="md-num">12</span><span class="md-cd">12</span></span>
+                  <span class="mock-day" style="background:rgba(242,185,150,0.85)"><span class="md-num">13</span><span class="md-cd">13</span></span>
+                  <span class="mock-day" style="background:rgba(242,185,150,0.85)"><span class="md-num">14</span><span class="md-cd">14</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="showcase-right">
+          <h2><em>Scientifically informed.</em> Deeply personal.</h2>
+          <p>Aura Cycles combines a 100% deterministic engine — every recommendation is computed from your data, run against scientific formulas — with an experience that feels like it was made just for you. Because it was.</p>
+          <div class="store-btns">
+            <a href="/app" class="store-btn"><span class="sb-icon">🌙</span><span class="sb-text"><small>Open the</small>Web App</span></a>
+            <button type="button" class="store-btn" id="install-btn"><span class="sb-icon">＋</span><span class="sb-text"><small>Add to</small>Home Screen</span></button>
+          </div>
+          <p class="install-hint" id="install-hint" hidden>To install: use your browser's menu → "Add to Home Screen" (iPhone: Share → Add to Home Screen). No app store needed.</p>
+          <div class="privacy-box">
+            <div class="pb-icon">🔒</div>
+            <div class="pb-text"><strong>Your data is yours. Always.</strong><br>Everything lives in your browser — we store nothing, we sell nothing, we don't even have a server to put it on. No login, ever.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== Footer ===== -->
+  <footer class="foot">
+    <div class="foot-brand">AURA CYCLES</div>
+    <div class="motto">Connect with inner guidance. <em>Leverage your cycle.</em></div>
+    <div class="coming-soon">
+      <span class="cs-badge"><span class="cs-apple"></span> Coming soon to the <strong>App Store</strong></span>
+      <span class="cs-note">For now, Aura is a web app — add it to your home screen and it installs like one.</span>
+    </div>
+    <div class="disc">General wellness guidance, not medical advice. Perimenopause &amp; menopause deserve a clinician's input.</div>
+  </footer>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js').catch(function () {});
+      });
+    }
+    // PWA install (Add to Home Screen)
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', function (e) {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+    document.getElementById('install-btn').addEventListener('click', function () {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function () { deferredPrompt = null; });
+      } else {
+        document.getElementById('install-hint').hidden = false;
+      }
+    });
+  </script>
+</body>
+</html>

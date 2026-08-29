@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Aura Cycles — Your cycle</title>
+  <meta name="description" content="Aura Cycles — your cycle map, weekly recommendations, and daily guidance. Private and deterministic, saved on your device." />
+  <meta name="theme-color" content="#0B1724" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" type="image/png" href="/static/icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="/static/icons/icon-180.png" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Aura Cycles" />
+  <link rel="stylesheet" href="/static/fonts/fonts.css" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+  <!-- ===== Top navigation (app) ===== -->
+  <nav class="topnav" aria-label="Primary">
+    <a class="nav-brand" href="/">aura</a>
+    <div class="nav-links nav-app">
+      <a href="#view-today" data-view="today">Today</a>
+      <a href="#view-calendar" data-view="calendar">Calendar</a>
+      <a href="#view-insights" data-view="insights">Insights</a>
+      <a href="#view-you" data-view="you">You</a>
+    </div>
+  </nav>
+
+  <!-- ===== App views (JS-driven) ===== -->
+  <main class="app" id="app-main">
+    <div id="view-today" class="view" hidden></div>
+    <div id="view-calendar" class="view" hidden></div>
+    <div id="view-insights" class="view" hidden></div>
+    <div id="view-you" class="view">
+      <form id="form" class="card form" autocomplete="off">
+        <div class="step-progress">
+          <span class="step-dot active"></span><span class="step-dot"></span><span class="step-dot"></span><span class="step-dot"></span>
+          <span class="step-label" id="step-label">Step 1 of 4</span>
+        </div>
+        <div class="step" data-step="1">
+          <h2>About your cycle</h2><p class="form-sub">Start with the essentials.</p>
+          <label class="field"><span>Age</span><input type="number" id="age" min="14" max="70" value="35" required /></label>
+          <label class="field"><span>Where are you in your cycle journey?</span>
+            <select id="stage"><option value="auto" selected>Not sure — guess from my age</option><option value="regular">Regular cycles</option><option value="very_early_perimenopause">Very early perimenopause — regular cycles, new changes</option><option value="perimenopause">Perimenopause — cycles shifting</option><option value="menopause">Menopause — no period for 12+ months</option></select></label>
+          <fieldset class="field peri-checklist">
+            <legend>New or worse over the last year? <em>(optional — helps spot early perimenopause)</em></legend>
+            <div class="peri-grid">
+              <label class="peri-item"><input type="checkbox" name="peri_symptom" value="heavy_flow" /> Heavier / longer flow</label>
+              <label class="peri-item"><input type="checkbox" name="peri_symptom" value="shorter_cycle" /> Shorter cycles</label>
+              <label class="peri-item"><input type="checkbox" name="peri_symptom" value="breast_changes" /> Sore / lumpy breasts</label>
+              <label class="peri-item"><input type="checkbox" name="peri_symptom" value="cramps" /> More cramps</label>
+              <label class="peri-item"><input type="checkbox" name="peri_symptom" value="mid_sleep" /> Waking mid-sleep</label>
+              <label class="peri-item"><input type="checkbox" name="peri_symptom" value="night_sweats" /> Night sweats</label>
+              <label class="peri-item"><input type="checkbox" name="peri_symptom" value="migraine" /> Worse migraines</label>
+              <label class="peri-item"><input type="checkbox" name="peri_symptom" value="mood_swings" /> More mood swings</label>
+              <label class="peri-item"><input type="checkbox" name="peri_symptom" value="weight_gain" /> Unexplained weight gain</label>
+            </div>
+            <small class="peri-src" id="peri-count">Selected 0 of 9 — based on CeMCOR's "very early perimenopause" criteria (Centre for Menstrual Cycle and Ovulation Research, UBC).</small>
+          </fieldset>
+          <fieldset class="field starts"><legend>Last period start dates</legend>
+            <div class="start-grid"><input type="date" id="start1" /><input type="date" id="start2" /><input type="date" id="start3" /></div>
+            <small>Enter 2–3, most recent first. Best guess is fine.</small></fieldset>
+          <div class="row">
+            <label class="field"><span>Period lasts (days)</span><input type="number" id="period_length" min="1" max="10" value="5" /></label>
+            <label class="field"><span>Cycle length (blank = auto)</span><input type="number" id="cycle_length" min="15" max="60" placeholder="auto" /></label></div>
+          <div class="step-actions"><button type="button" class="cta" data-next>Next →</button></div>
+        </div>
+        <div class="step" data-step="2" hidden>
+          <h2>Your routine</h2><p class="form-sub">How you move and what fuels you.</p>
+          <label class="field"><span>How often do you work out?</span><select id="workout_frequency"><option value="daily">Daily</option><option value="5x">4–5× / week</option><option value="3x" selected>2–3× / week</option><option value="1x">1× / week or less</option></select></label>
+          <label class="field"><span>What kind of training?</span><select id="training"><option value="heavy">Heavy strength / powerlifting</option><option value="moderate">Moderate weights, gym</option><option value="light">Light weights / pilates / yoga</option><option value="cardio">Mostly cardio / endurance</option><option value="mix" selected>Mix of strength + cardio</option></select></label>
+          <label class="field"><span>What's your diet like?</span><select id="diet"><option value="balanced" selected>Balanced</option><option value="gluten-free">Gluten-free</option><option value="vegetarian">Vegetarian</option><option value="vegan">Vegan</option><option value="pescatarian">Pescatarian</option><option value="low-carb">Low-carb / keto</option><option value="high-protein">High-protein</option><option value="if">Intermittent fasting</option></select></label>
+          <div class="step-actions"><button type="button" class="step-back" data-back>← Back</button><button type="button" class="cta" data-next>Next →</button></div>
+        </div>
+        <div class="step" data-step="3" hidden>
+          <h2>Your world</h2><p class="form-sub">People, and your hormonal context.</p>
+          <label class="field"><span>How often do you see friends?</span><select id="social"><option value="daily">Daily</option><option value="weekly" selected>A few times a week</option><option value="monthly">A few times a month</option><option value="rarely">Rarely</option></select></label>
+          <label class="field"><span>Relationship status</span><select id="relationship"><option value="single" selected>Single</option><option value="relationship">In a relationship</option></select></label>
+          <label class="field"><span>Are you trying to get pregnant?</span><select id="ttc"><option value="no" selected>No</option><option value="yes">Yes — trying to conceive</option></select></label>
+          <label class="field" id="hrt-field"><span>Are you on HRT? <em>(hormone therapy)</em></span><select id="hrt"><option value="no" selected>No</option><option value="yes">Yes — on HRT</option><option value="considering">Considering / discussing with a doctor</option></select></label>
+          <label class="field"><span>On or starting a GLP-1? <em>(Ozempic, Wegovy, Mounjaro…)</em></span><select id="glp1"><option value="no" selected>No</option><option value="yes">Yes — currently on one</option><option value="starting">Starting soon</option></select></label>
+          <div class="step-actions"><button type="button" class="step-back" data-back>← Back</button><button type="button" class="cta" data-next>Next →</button></div>
+        </div>
+        <div class="step" data-step="4" hidden>
+          <h2>A little stardust</h2><p class="form-sub">Your sign weaves into every week — a personalized read on top of your cycle science.</p>
+          <label class="field"><span>Sun sign</span><select id="sign"><option value="skip" selected>Skip — not into astrology</option><option value="aries">♈ Aries</option><option value="taurus">♉ Taurus</option><option value="gemini">♊ Gemini</option><option value="cancer">♋ Cancer</option><option value="leo">♌ Leo</option><option value="virgo">♍ Virgo</option><option value="libra">♎ Libra</option><option value="scorpio">♏ Scorpio</option><option value="sagittarius">♐ Sagittarius</option><option value="capricorn">♑ Capricorn</option><option value="aquarius">♒ Aquarius</option><option value="pisces">♓ Pisces</option></select></label>
+          <div class="step-actions"><button type="button" class="step-back" data-back>← Back</button><button type="submit" class="cta">Reveal my cycle ✨</button></div>
+        </div>
+        <div class="privacy">Your answers and daily logs are <strong>saved on this device</strong> — no account, no login. Come back anytime and Aura shows you the current week automatically. <a href="#" id="clear">Clear my data</a></div>
+      </form>
+    </div>
+  </main>
+
+  <!-- ===== Bottom tab bar (mobile) ===== -->
+  <nav class="tabbar" aria-label="Primary">
+    <a href="#view-today" data-view="today">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Home</span>
+    </a>
+    <a href="#view-calendar" data-view="calendar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l3.5 2.5"/><path d="M8.5 9.5a3.5 3.5 0 0 1 7 0"/></svg>
+      <span>Cycle</span>
+    </a>
+    <a href="#view-insights" data-view="insights">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 21H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h7a2 2 0 0 1 2 2v1"/><path d="M16 14v6M13 17h6"/></svg>
+      <span>Insights</span>
+    </a>
+    <a href="#view-you" data-view="you">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg>
+      <span>You</span>
+    </a>
+  </nav>
+
+  <script src="/static/engine.js"></script>
+  <script src="/static/app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js').catch(function () {});
+      });
+    }
+  </script>
+</body>
+</html>
