@@ -1,5 +1,5 @@
 /* Aura Cycles — service worker (app-shell + offline). */
-const CACHE = 'aura-cycles-v29';
+const CACHE = 'aura-cycles-v30';
 const ASSETS = [
   '/',
   '/app',
