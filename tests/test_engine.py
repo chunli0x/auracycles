@@ -250,17 +250,17 @@ def test_glp1_biases_strength_and_protein():
     on = engine.read(dict(base, glp1="yes"))["recommendations"]
     starting = engine.read(dict(base, glp1="starting"))["recommendations"]
 
-    # No GLP-1 -> no muscle-protection guidance.
-    assert not any("strength training your backbone" in t for t in off["training"])
-    assert not any("lead with protein" in d for d in off["diet"])
+    # No GLP-1 -> no GLP-1 guidance anywhere.
+    assert not any(t.startswith("On a GLP-1") or t.startswith("Starting a GLP-1") for t in off["training"])
+    assert not any(d.startswith("On a GLP-1") or d.startswith("Starting a GLP-1") for d in off["diet"])
 
-    # Currently on a GLP-1 -> strength + protein.
-    assert any("strength training your backbone" in t for t in on["training"])
-    assert any("lead with protein" in d for d in on["diet"])
+    # Currently on a GLP-1 -> phase-specific strength + protein guidance.
+    assert any(t.startswith("On a GLP-1") for t in on["training"])
+    assert any(d.startswith("On a GLP-1") for d in on["diet"])
 
-    # Starting -> front-load strength + protein from day one.
-    assert any("add strength training now" in t for t in starting["training"])
-    assert any("front-load protein" in d for d in starting["diet"])
+    # Starting -> phase-specific front-load guidance.
+    assert any(t.startswith("Starting a GLP-1") for t in starting["training"])
+    assert any(d.startswith("Starting a GLP-1") for d in starting["diet"])
 
 
 def test_read_no_starts_still_returns_structure():
@@ -284,10 +284,29 @@ def test_cycle_plan_covers_all_stretches_with_glp1():
     out = engine.read(dict(base))
     plan = out["cycle_plan"]
     assert set(plan.keys()) == set(engine.STRETCHES)
-    # GLP-1 strength + protein guidance lands in every week, not just today's.
+    # GLP-1 guidance lands on both training and diet in every week.
     for stretch, rec in plan.items():
-        assert any("strength training your backbone" in t for t in rec["training"])
-        assert any("lead with protein" in d for d in rec["diet"])
+        assert any(t.startswith("On a GLP-1") for t in rec["training"])
+        assert any(d.startswith("On a GLP-1") for d in rec["diet"])
+
+
+def test_glp1_guidance_varies_by_stretch():
+    base = {
+        "age": 32,
+        "stage": "regular",
+        "period_starts": ["2026-07-23", "2026-06-26"],
+        "period_length": 5,
+        "training": "mix",
+        "diet": "balanced",
+        "glp1": "yes",
+        "today": "2026-08-13",
+    }
+    plan = engine.read(dict(base))["cycle_plan"]
+    # The GLP-1 training and diet lines differ from one stretch to the next.
+    train_lines = {s: next(t for t in plan[s]["training"] if t.startswith("On a GLP-1")) for s in plan}
+    diet_lines = {s: next(d for d in plan[s]["diet"] if d.startswith("On a GLP-1")) for s in plan}
+    assert len(set(train_lines.values())) == 5
+    assert len(set(diet_lines.values())) == 5
 
 
 def test_cycle_plan_empty_when_not_cycling():

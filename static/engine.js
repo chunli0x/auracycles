@@ -524,7 +524,76 @@
     },
   };
 
-  function _wellness(profile) {
+  // GLP-1 guidance that follows the phase of the cycle, not a single blanket rule.
+  var GLP1_NOTES = {
+    "yes": {
+      menstrual: {
+        training: ["On a GLP-1, keep strength light this week — protein and rest protect muscle more than pushing through."],
+        diet: ["On a GLP-1, appetite is lowest now — make iron-rich food count with protein at each small meal."],
+        wellness: ["On a GLP-1, appetite is lowest now; small, frequent meals beat forcing big ones."],
+      },
+      follicular: {
+        training: ["On a GLP-1, this is your strength week — progressive overload is your best muscle-preserver."],
+        diet: ["On a GLP-1, appetite is steadier now — an easy week to hit your protein target."],
+        wellness: ["On a GLP-1, appetite is steadier now; a good week to establish regular meal timing."],
+      },
+      ovulatory: {
+        training: ["On a GLP-1, ride the energy peak — max effort now, but keep protein timing tight around sessions."],
+        diet: ["On a GLP-1, keep meals light but protein-forward — digestion can be sensitive at peak."],
+        wellness: ["On a GLP-1, digestion can be sensitive at peak; keep meals light and hydrated."],
+      },
+      early_luteal: {
+        training: ["On a GLP-1, maintain moderate weights — you still have strength; protect it."],
+        diet: ["On a GLP-1, steady blood sugar matters — pair protein with complex carbs."],
+        wellness: ["On a GLP-1, steady blood sugar helps; pair protein with complex carbs."],
+      },
+      late_luteal: {
+        training: ["On a GLP-1, honor the de-load — muscle is built in recovery, not by grinding this week."],
+        diet: ["On a GLP-1, carb cravings and low appetite can clash — protein first, then clean carbs."],
+        wellness: ["On a GLP-1, bloating and cravings can overlap with low appetite; eat small and often."],
+      },
+    },
+    "starting": {
+      menstrual: {
+        training: ["Starting a GLP-1 — ease into strength now so it's a habit before appetite drops."],
+        diet: ["Starting a GLP-1 — build the protein habit now; this week is about routine, not perfection."],
+        wellness: ["Starting a GLP-1 — a gentler week to begin; keep meals small and routine."],
+      },
+      follicular: {
+        training: ["Starting a GLP-1 — the gentlest week to begin; add strength before appetite drops."],
+        diet: ["Starting a GLP-1 — front-load protein now so muscle isn't the first thing to go."],
+        wellness: ["Starting a GLP-1 — the calmest week to start; your stomach will thank you."],
+      },
+      ovulatory: {
+        training: ["Starting a GLP-1 — your strongest week; add strength now while energy is high."],
+        diet: ["Starting a GLP-1 — lock in the protein habit while appetite is still steady."],
+        wellness: ["Starting a GLP-1 — energy is high but start slow; digestion can be sensitive at peak."],
+      },
+      early_luteal: {
+        training: ["Starting a GLP-1 — maintain strength now before the late-cycle de-load."],
+        diet: ["Starting a GLP-1 — protein first; steady blood sugar will soften the transition."],
+        wellness: ["Starting a GLP-1 — steady now; build the small-meal habit before late-cycle bloat."],
+      },
+      late_luteal: {
+        training: ["Starting a GLP-1 — a tough week to begin; if starting now, keep it gentle."],
+        diet: ["Starting a GLP-1 — if you can, start in a calmer week; protein first either way."],
+        wellness: ["Starting a GLP-1 — if you can, wait for a calmer week; this is the hardest window to begin."],
+      },
+    },
+  };
+
+  var _GLP1_GENERIC = {
+    "yes": [
+      ["On a GLP-1, make strength training your backbone — it protects muscle mass as weight comes off."],
+      ["On a GLP-1, lead with protein (about 1.6 g per kg of body weight a day) to hold onto muscle in a deficit."],
+    ],
+    "starting": [
+      ["Starting a GLP-1 — add strength training now, so you protect muscle from the very first week."],
+      ["Starting a GLP-1 — front-load protein now so muscle isn't the first thing to go."],
+    ],
+  };
+
+  function _wellness(profile, stretch) {
     var notes = [];
     var hrt = profile.hrt || "no";
     var glp1 = profile.glp1 || "no";
@@ -533,7 +602,9 @@
     } else if (hrt === "considering") {
       notes.push("Considering HRT — log symptoms for a few weeks; it's the best data to bring to a clinician.");
     }
-    if (glp1 === "yes") {
+    if (GLP1_NOTES[glp1] && GLP1_NOTES[glp1][stretch]) {
+      notes.push(GLP1_NOTES[glp1][stretch].wellness[0]);
+    } else if (glp1 === "yes") {
       notes.push("On a GLP-1 — appetite and digestion can shift; small, regular meals and steady hydration help.");
     } else if (glp1 === "starting") {
       notes.push("Starting a GLP-1 — begin in a week your stomach is calm (follicular is gentlest; avoid the late-cycle bloat window).");
@@ -541,18 +612,15 @@
     return notes;
   }
 
-  function _glp1_muscle_notes(profile) {
-    var training = [];
-    var diet = [];
+  function _glp1_muscle_notes(profile, stretch) {
     var glp1 = profile.glp1 || "no";
-    if (glp1 === "yes") {
-      training.push("On a GLP-1, make strength training your backbone — it protects muscle mass as weight comes off.");
-      diet.push("On a GLP-1, lead with protein (about 1.6 g per kg of body weight a day) to hold onto muscle in a deficit.");
-    } else if (glp1 === "starting") {
-      training.push("Starting a GLP-1 — add strength training now, so you protect muscle from the very first week.");
-      diet.push("Starting a GLP-1 — front-load protein now so muscle isn't the first thing to go.");
+    if (GLP1_NOTES[glp1] && GLP1_NOTES[glp1][stretch]) {
+      return [GLP1_NOTES[glp1][stretch].training.slice(), GLP1_NOTES[glp1][stretch].diet.slice()];
     }
-    return [training, diet];
+    if (_GLP1_GENERIC[glp1]) {
+      return [_GLP1_GENERIC[glp1][0].slice(), _GLP1_GENERIC[glp1][1].slice()];
+    }
+    return [[], []];
   }
 
   function recommend(profile, stretch, stage) {
@@ -561,12 +629,12 @@
     if (stage === "menopause" || stretch == null) {
       var recs = {};
       dims.forEach(function (d) { recs[d] = STAGE_OVERRIDES.menopause[d].slice(); });
-      var g1 = _glp1_muscle_notes(profile);
+      var g1 = _glp1_muscle_notes(profile, stretch);
       recs.training = recs.training.concat(g1[0]);
       recs.diet = recs.diet.concat(g1[1]);
       var result = { headline: "Post-menopause: steady-state planning" };
       Object.keys(recs).forEach(function (k) { result[k] = recs[k]; });
-      var w = _wellness(profile);
+      var w = _wellness(profile, stretch);
       if (w.length) result.wellness = w;
       return result;
     }
@@ -594,7 +662,7 @@
       });
     }
 
-    var g2 = _glp1_muscle_notes(profile);
+    var g2 = _glp1_muscle_notes(profile, stretch);
     base.training = base.training.concat(g2[0]);
     base.diet = base.diet.concat(g2[1]);
 
@@ -602,7 +670,7 @@
     if (stage === "perimenopause" || stage === "very_early_perimenopause") headline += " — but trust your body over the day number";
     var result2 = { headline: headline };
     Object.keys(base).forEach(function (k) { result2[k] = base[k]; });
-    var w2 = _wellness(profile);
+    var w2 = _wellness(profile, stretch);
     if (w2.length) result2.wellness = w2;
     return result2;
   }

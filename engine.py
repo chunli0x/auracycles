@@ -561,7 +561,79 @@ STAGE_OVERRIDES: dict[str, dict[str, list[str]]] = {
 }
 
 
-def _wellness(profile: dict[str, Any]) -> list[str]:
+# GLP-1 guidance that follows the phase of the cycle, not a single blanket
+# rule. GLP-1s blunt appetite and accelerate muscle loss, so both the food and
+# the training advice change with what the body is already doing that week.
+GLP1_NOTES: dict[str, dict[str, dict[str, list[str]]]] = {
+    "yes": {
+        "menstrual": {
+            "training": ["On a GLP-1, keep strength light this week — protein and rest protect muscle more than pushing through."],
+            "diet": ["On a GLP-1, appetite is lowest now — make iron-rich food count with protein at each small meal."],
+            "wellness": ["On a GLP-1, appetite is lowest now; small, frequent meals beat forcing big ones."],
+        },
+        "follicular": {
+            "training": ["On a GLP-1, this is your strength week — progressive overload is your best muscle-preserver."],
+            "diet": ["On a GLP-1, appetite is steadier now — an easy week to hit your protein target."],
+            "wellness": ["On a GLP-1, appetite is steadier now; a good week to establish regular meal timing."],
+        },
+        "ovulatory": {
+            "training": ["On a GLP-1, ride the energy peak — max effort now, but keep protein timing tight around sessions."],
+            "diet": ["On a GLP-1, keep meals light but protein-forward — digestion can be sensitive at peak."],
+            "wellness": ["On a GLP-1, digestion can be sensitive at peak; keep meals light and hydrated."],
+        },
+        "early_luteal": {
+            "training": ["On a GLP-1, maintain moderate weights — you still have strength; protect it."],
+            "diet": ["On a GLP-1, steady blood sugar matters — pair protein with complex carbs."],
+            "wellness": ["On a GLP-1, steady blood sugar helps; pair protein with complex carbs."],
+        },
+        "late_luteal": {
+            "training": ["On a GLP-1, honor the de-load — muscle is built in recovery, not by grinding this week."],
+            "diet": ["On a GLP-1, carb cravings and low appetite can clash — protein first, then clean carbs."],
+            "wellness": ["On a GLP-1, bloating and cravings can overlap with low appetite; eat small and often."],
+        },
+    },
+    "starting": {
+        "menstrual": {
+            "training": ["Starting a GLP-1 — ease into strength now so it's a habit before appetite drops."],
+            "diet": ["Starting a GLP-1 — build the protein habit now; this week is about routine, not perfection."],
+            "wellness": ["Starting a GLP-1 — a gentler week to begin; keep meals small and routine."],
+        },
+        "follicular": {
+            "training": ["Starting a GLP-1 — the gentlest week to begin; add strength before appetite drops."],
+            "diet": ["Starting a GLP-1 — front-load protein now so muscle isn't the first thing to go."],
+            "wellness": ["Starting a GLP-1 — the calmest week to start; your stomach will thank you."],
+        },
+        "ovulatory": {
+            "training": ["Starting a GLP-1 — your strongest week; add strength now while energy is high."],
+            "diet": ["Starting a GLP-1 — lock in the protein habit while appetite is still steady."],
+            "wellness": ["Starting a GLP-1 — energy is high but start slow; digestion can be sensitive at peak."],
+        },
+        "early_luteal": {
+            "training": ["Starting a GLP-1 — maintain strength now before the late-cycle de-load."],
+            "diet": ["Starting a GLP-1 — protein first; steady blood sugar will soften the transition."],
+            "wellness": ["Starting a GLP-1 — steady now; build the small-meal habit before late-cycle bloat."],
+        },
+        "late_luteal": {
+            "training": ["Starting a GLP-1 — a tough week to begin; if starting now, keep it gentle."],
+            "diet": ["Starting a GLP-1 — if you can, start in a calmer week; protein first either way."],
+            "wellness": ["Starting a GLP-1 — if you can, wait for a calmer week; this is the hardest window to begin."],
+        },
+    },
+}
+
+_GLP1_GENERIC: dict[str, tuple[list[str], list[str]]] = {
+    "yes": (
+        ["On a GLP-1, make strength training your backbone — it protects muscle mass as weight comes off."],
+        ["On a GLP-1, lead with protein (about 1.6 g per kg of body weight a day) to hold onto muscle in a deficit."],
+    ),
+    "starting": (
+        ["Starting a GLP-1 — add strength training now, so you protect muscle from the very first week."],
+        ["Starting a GLP-1 — front-load protein now so muscle isn't the first thing to go."],
+    ),
+}
+
+
+def _wellness(profile: dict[str, Any], stretch: Optional[str] = None) -> list[str]:
     """Extra clinician-aligned notes for HRT and GLP-1 use."""
     notes: list[str] = []
     hrt = profile.get("hrt", "no")
@@ -570,25 +642,27 @@ def _wellness(profile: dict[str, Any]) -> list[str]:
         notes.append("On HRT — symptoms may feel steadier, but still plan around how you actually feel.")
     elif hrt == "considering":
         notes.append("Considering HRT — log symptoms for a few weeks; it's the best data to bring to a clinician.")
-    if glp1 == "yes":
+    if glp1 in GLP1_NOTES and stretch in GLP1_NOTES[glp1]:
+        notes.append(GLP1_NOTES[glp1][stretch]["wellness"][0])
+    elif glp1 == "yes":
         notes.append("On a GLP-1 — appetite and digestion can shift; small, regular meals and steady hydration help.")
     elif glp1 == "starting":
         notes.append("Starting a GLP-1 — begin in a week your stomach is calm (follicular is gentlest; avoid the late-cycle bloat window).")
     return notes
 
 
-def _glp1_muscle_notes(profile: dict[str, Any]) -> tuple[list[str], list[str]]:
-    """GLP-1s accelerate muscle loss — bias guidance toward strength + protein."""
-    training: list[str] = []
-    diet: list[str] = []
+def _glp1_muscle_notes(profile: dict[str, Any], stretch: Optional[str] = None) -> tuple[list[str], list[str]]:
+    """GLP-1 guidance keyed to the current stretch (GLP-1s blunt appetite and
+    accelerate muscle loss). Falls back to generic advice when there is no
+    cycle to match (menopause / no data)."""
     glp1 = profile.get("glp1", "no")
-    if glp1 == "yes":
-        training.append("On a GLP-1, make strength training your backbone — it protects muscle mass as weight comes off.")
-        diet.append("On a GLP-1, lead with protein (about 1.6 g per kg of body weight a day) to hold onto muscle in a deficit.")
-    elif glp1 == "starting":
-        training.append("Starting a GLP-1 — add strength training now, so you protect muscle from the very first week.")
-        diet.append("Starting a GLP-1 — front-load protein now so muscle isn't the first thing to go.")
-    return training, diet
+    if glp1 in GLP1_NOTES and stretch in GLP1_NOTES[glp1]:
+        entry = GLP1_NOTES[glp1][stretch]
+        return list(entry["training"]), list(entry["diet"])
+    if glp1 in _GLP1_GENERIC:
+        train, diet = _GLP1_GENERIC[glp1]
+        return list(train), list(diet)
+    return [], []
 
 
 def recommend(profile: dict[str, Any], stretch: Optional[str], stage: str) -> dict[str, Any]:
@@ -598,12 +672,12 @@ def recommend(profile: dict[str, Any], stretch: Optional[str], stage: str) -> di
     if stage == "menopause" or stretch is None:
         # No cycle to match: stage-level guidance only.
         recs = {d: list(STAGE_OVERRIDES["menopause"][d]) for d in dims}
-        glp1_train, glp1_diet = _glp1_muscle_notes(profile)
+        glp1_train, glp1_diet = _glp1_muscle_notes(profile, stretch)
         recs["training"].extend(glp1_train)
         recs["diet"].extend(glp1_diet)
         headline = "Post-menopause: steady-state planning"
         result = {"headline": headline, **recs}
-        wellness = _wellness(profile)
+        wellness = _wellness(profile, stretch)
         if wellness:
             result["wellness"] = wellness
         return result
@@ -629,7 +703,7 @@ def recommend(profile: dict[str, Any], stretch: Optional[str], stage: str) -> di
             base[d].extend(STAGE_OVERRIDES["perimenopause"][d])
 
     # GLP-1s accelerate muscle loss — bias toward strength training + protein.
-    glp1_train, glp1_diet = _glp1_muscle_notes(profile)
+    glp1_train, glp1_diet = _glp1_muscle_notes(profile, stretch)
     base["training"].extend(glp1_train)
     base["diet"].extend(glp1_diet)
 
@@ -637,7 +711,7 @@ def recommend(profile: dict[str, Any], stretch: Optional[str], stage: str) -> di
     if stage in ("perimenopause", "very_early_perimenopause"):
         headline += " — but trust your body over the day number"
     result = {"headline": headline, **base}
-    wellness = _wellness(profile)
+    wellness = _wellness(profile, stretch)
     if wellness:
         result["wellness"] = wellness
     return result
